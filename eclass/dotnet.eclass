@@ -26,6 +26,12 @@ inherit eutils versionator mono-env
 DEPEND+=" dev-lang/mono"
 IUSE+=" debug developer"
 
+if use gac ; then
+	SRC_URI+="
+		mirror://gentoo/mono.snk.bz2
+	"
+fi
+
 # SRC_URI+=" https://github.com/mono/mono/raw/master/mcs/class/mono.snk"
 # I was unable to setup it this ^^ way
 
@@ -133,7 +139,7 @@ exbuild_strong() {
 	if use gac; then
 		if [[ -z ${SNK_FILENAME} ]]; then
 			# elog ${BASH_SOURCE}
-			SNK_FILENAME=/var/lib/layman/dotnet/eclass/mono.snk
+			SNK_FILENAME=${WORKDIR}/mono.snk
 			# sn - Digitally sign/verify/compare strongnames on CLR assemblies. 
 			# man sn = http://linux.die.net/man/1/sn
 		fi
