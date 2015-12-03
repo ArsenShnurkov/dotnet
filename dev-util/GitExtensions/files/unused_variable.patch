@@ -1,0 +1,20 @@
+diff --git a/Plugins/Gerrit/FormGerritPublish.cs b/Plugins/Gerrit/FormGerritPublish.cs
+index 9ce0ce2..c6139c0 100644
+--- a/Plugins/Gerrit/FormGerritPublish.cs
++++ b/Plugins/Gerrit/FormGerritPublish.cs
+@@ -5,6 +5,7 @@
+ using GitCommands;
+ using GitUIPluginInterfaces;
+ using ResourceManager;
++using System.Diagnostics;
+ 
+ namespace Gerrit
+ {
+@@ -26,6 +27,7 @@ public FormGerritPublish(IGitUICommands uiCommand)
+         {
+             InitializeComponent();
+             Translate();
++            Trace.Assert (toolTip1 != null); // suppress warning on mono, because of "error as warning"
+         }
+ 
+         private void PublishClick(object sender, EventArgs e)

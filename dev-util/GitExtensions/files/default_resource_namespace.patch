@@ -1,0 +1,13 @@
+diff --git a/GitUI/GitUI.csproj b/GitUI/GitUI.csproj
+index daab425..58aa93c 100644
+--- a/GitUI/GitUI.csproj
++++ b/GitUI/GitUI.csproj
+@@ -1415,6 +1409,8 @@
+       <Generator>ResXFileCodeGenerator</Generator>
+       <SubType>Designer</SubType>
+       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
++      <CustomToolNamespace>GitUI.Properties</CustomToolNamespace>
++      <LogicalName>GitUI.Properties.Resources.resources</LogicalName> 
+     </EmbeddedResource>
+     <EmbeddedResource Include="UserControls\RevisionGrid.resx">
+       <DependentUpon>RevisionGrid.cs</DependentUpon>

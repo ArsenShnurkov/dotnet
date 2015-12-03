@@ -1,0 +1,26 @@
+--- a/GitExtensions/GitExtensions.Mono.csproj
++++ b/GitExtensions/GitExtensions.Mono.csproj
+@@ -52,6 +52,11 @@
+         <Command type="AfterBuild" command="copy_plugins.sh  ${SolutionDir} ${ProjectConfigName}" workingdir="${TargetDir}" />
+       </CustomCommands>
+     </CustomCommands>
++    <EnvironmentVariables>
++      <EnvironmentVariables>
++        <Variable name="MONO_MANAGED_WATCHER" value="5" />
++      </EnvironmentVariables>
++    </EnvironmentVariables>
+   </PropertyGroup>
+   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+     <DebugType>pdbonly</DebugType>
+@@ -66,6 +71,11 @@
+         <Command type="AfterBuild" command="copy_plugins.sh  ${SolutionDir} ${ProjectConfigName}" workingdir="${TargetDir}" />
+       </CustomCommands>
+     </CustomCommands>
++    <EnvironmentVariables>
++      <EnvironmentVariables>
++        <Variable name="MONO_MANAGED_WATCHER" value="5" />
++      </EnvironmentVariables>
++    </EnvironmentVariables>
+   </PropertyGroup>
+   <PropertyGroup>
+     <ApplicationManifest>app.manifest</ApplicationManifest>

@@ -3,21 +3,22 @@
 # $Id$
 
 EAPI=5
-inherit dotnet
+inherit nupkg
 
 NAME="slntools"
 HOMEPAGE="https://github.com/ArsenShnurkov/${NAME}"
 
-EGIT_COMMIT="705869e96a2f0e401be03f8e8478df3e1f2b9373"
+EGIT_COMMIT="a2843a3c3b0e3ae6b88582fccd1bd55c92299285"
 SRC_URI="${HOMEPAGE}/archive/${EGIT_COMMIT}.zip -> ${PF}.zip"
 S="${WORKDIR}/${NAME}-${EGIT_COMMIT}"
 
 SLOT=0
 
 DESCRIPTION="C# library to work with solution and project files"
-LICENSE="MIT" # https://github.com/jamietre/HtmlParserSharp/blob/master/LICENSE.txt
+LICENSE="MIT" # https://github.com/ArsenShnurkov/slntools/blob/master/LICENSE
 KEYWORDS="~amd64 ~x86"
-IUSE="developer nupkg debug"
+IUSE="net45 developer nupkg debug"
+USE_DOTNET="net45"
 
 RDEPEND=">=dev-lang/mono-4.0.2.5"
 DEPEND="${RDEPEND}
@@ -27,18 +28,10 @@ S="${WORKDIR}/${NAME}-${EGIT_COMMIT}"
 SLN_FILE=SLNTools.sln
 METAFILETOBUILD="${S}/Main/${SLN_FILE}"
 
-src_unpack()
-{
-	# /usr/portage/distfiles/csquery-1.3.5.200.zip
-	# /var/tmp/portage/dev-dotnet/csquery-1.3.5.200-r20150522/work/CsQuery-696ac0533a3e665a34cdc4050d1f46e91f5a3356
-	default
-}
-
 src_prepare() {
-
 	default
 
-	epatch "${FILESDIR}/remove-wix-project-from-sln-file.patch"
+	epatch "${FILESDIR}/remove-wix-project-from-sln-file-v2.patch"
 
 	# System.EntryPointNotFoundException: GetStdHandle
 	#   at (wrapper managed-to-native) CWDev.SLNTools.CommandLine.Parser:GetStdHandle (int)
