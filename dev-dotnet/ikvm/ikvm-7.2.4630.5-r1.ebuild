@@ -21,7 +21,7 @@ RDEPEND=">=dev-lang/mono-2
 DEPEND="${RDEPEND}
 	!dev-dotnet/ikvm-bin
 	>=dev-dotnet/nant-0.85
-	virtual/jdk:1.7
+	virtual/jdk:1.8
 	app-arch/unzip
 	virtual/pkgconfig
 	app-arch/sharutils"
