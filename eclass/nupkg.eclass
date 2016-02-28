@@ -84,6 +84,7 @@ enuspec() {
 		else
 			PROPS=configuration=Release
 		fi
+		einfo nuget pack -Properties "${PROPS}" -BasePath "${S}" -OutputDirectory "${WORKDIR}" -NonInteractive -Verbosity detailed "$@" || die
 		nuget pack -Properties "${PROPS}" -BasePath "${S}" -OutputDirectory "${WORKDIR}" -NonInteractive -Verbosity detailed "$@" || die
 	fi
 }
