@@ -20,3 +20,9 @@
 		Общеязыковая исполняющая среда (ECMA-335, ISO/IEC 23271), от компании Xamarin
 	</longdescription>
 </pkgmetadata>
+<!--
+The goal of this modification is to build debug version of mono runime,
+which should provide deep stack traces with source file names and line numbers.
+
+Also, it should build directly from a given SHA1 label, to avoid waiting for tagging.
+-->
