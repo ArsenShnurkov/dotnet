@@ -22,6 +22,13 @@ DESCRIPTION="CMS written with CSharp"
 
 SLOT="1.7.2"
 
+CDEPEND="
+	www-apache/mod_mono
+	>=dev-dotnet/system-web-4.6.0.182-r1
+"
+DEPEND="${CDEPEND}"
+RDEPEND="${CDEPEND}"
+
 src_prepare() {
 	epatch "${FILESDIR}/case-of-path-letters.patch"
 	epatch "${FILESDIR}/add-reference-to-system-data.patch"
