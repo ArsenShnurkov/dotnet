@@ -23,16 +23,20 @@ HOMEPAGE="http://www.orchardproject.net/"
 
 SLOT="1.7.3"
 
-#	dev-dotnet/autofac
-#	dev-dotnet/castle-core
 CDEPEND="
 	www-apache/mod_mono
 	>=dev-dotnet/system-web-4.6.0.182-r1
+	dev-dotnet/castle-core
+	dev-dotnet/autofac
 "
 DEPEND="${CDEPEND}"
 RDEPEND="${CDEPEND}"
 
 src_prepare() {
+	# remove untrusted binary files
+	rm 0rf "${S}/lib" || die
+
+	# patch remaining source code
 	epatch "${FILESDIR}/case-of-path-letters.patch"
 	epatch "${FILESDIR}/web-config.patch"
 	eapply "${FILESDIR}/add-reference-to-system-data-${PV}.patch"
@@ -46,7 +50,10 @@ src_compile() {
 src_install() {
 	# see https://wiki.gentoo.org/wiki/GLEP:11#Installation_Paths
 	dodir /usr/share/webapps/${PF}/htdocs/
+	dodir /usr/share/webapps/${PF}/htdocs/App_Data
+	dodir /usr/share/webapps/${PF}/htdocs/App_Data/Dependencies
 	#insinto /usr/share/webapps/${PF}/htdocs/
 	# http://askubuntu.com/questions/86822/how-can-i-copy-the-contents-of-a-folder-to-another-folder-in-a-different-directo
 	cp -a "${S}/src/Orchard.Web/." "${D}/usr/share/webapps/${PF}/htdocs/" || die
+	chown -R aspnet:aspnet "${D}/usr/share/webapps/${PF}/htdocs" || die
 }
