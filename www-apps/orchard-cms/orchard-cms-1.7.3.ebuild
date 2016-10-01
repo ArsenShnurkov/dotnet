@@ -28,6 +28,7 @@ CDEPEND="
 	>=dev-dotnet/system-web-4.6.0.182-r1
 	dev-dotnet/castle-core
 	dev-dotnet/autofac
+	dev-dotnet/autofac-configuration
 "
 DEPEND="${CDEPEND}"
 RDEPEND="${CDEPEND}"
