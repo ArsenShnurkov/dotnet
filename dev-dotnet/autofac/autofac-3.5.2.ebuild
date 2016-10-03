@@ -39,6 +39,7 @@ src_prepare() {
 
 src_compile() {
 	exbuild_strong /p:VersionNumber=${PV} "Core/Source/Autofac/Autofac.csproj"
+	exbuild_strong /p:VersionNumber=${PV} "Core/Source/Autofac.Integration.Web/Autofac.Integration.Web.csproj"
 }
 
 src_install() {
@@ -48,5 +49,6 @@ src_install() {
 		DIR="Release"
 	fi
 	egacinstall "Core/Source/Autofac/bin/${DIR}/Autofac.dll"
-	einstall_pc_file "${PN}" "${PV}" "Autofac"
+	egacinstall "Core/Source/Autofac.Integration.Web/bin/${DIR}/Autofac.Integration.Web.dll"
+	einstall_pc_file "${PN}" "${PV}" "Autofac" "Autofac.Integration.Web"
 }
