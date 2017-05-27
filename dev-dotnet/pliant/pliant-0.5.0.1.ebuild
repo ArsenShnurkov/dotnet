@@ -28,7 +28,7 @@ COMMON_DEPEND=">=dev-lang/mono-4.0.2.5
 RDEPEND="${COMMON_DEPEND}
 "
 DEPEND="${COMMON_DEPEND}
-	>=dev-dotnet/msbuildtasks-1.5.0.196
+	>=dev-dotnet/msbuildtasks-1.5.0.235
 "
 
 src_prepare() {
