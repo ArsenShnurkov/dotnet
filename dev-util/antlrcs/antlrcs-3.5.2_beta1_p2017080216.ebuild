@@ -7,7 +7,11 @@ EAPI=6
 KEYWORDS="~amd64 ~ppc ~x86"
 RESTRICT="mirror"
 
-SLOT="1"
+SLOT="0"
+APPENDIX=""
+if [ "${SLOT}" != "0" ] ; then
+    APPENDIX="-${SLOT}"
+fi
 
 USE_DOTNET="net45"
 
@@ -16,7 +20,7 @@ inherit multilib dotbuildtask eutils
 NAME="antlrcs"
 HOMEPAGE="https://github.com/antlr/${NAME}"
 EGIT_COMMIT="ca331b7109e1faa5a6aa7336bb6281ce9363e62b"
-SRC_URI="https://github.com/ArsenShnurkov/shnurise-tarballs/raw/dev-utils/${PN}-${SLOT}/${PN}-${PV}.tar.gz -> ${NAME}-${PV}.tar.gz"
+SRC_URI="https://github.com/ArsenShnurkov/shnurise-tarballs/raw/dev-utils/${PN}${APPENDIX}/${PN}${APPENDIX}.tar.gz -> ${NAME}-${PV}.tar.gz"
 S="${WORKDIR}"
 
 DESCRIPTION="The C# port of ANTLR 3"
@@ -32,11 +36,11 @@ DEPEND="${COMMON_DEPEND}
 	>=dev-dotnet/antlr3-runtime-${PV}
 "
 
-OUTPUT_PATH="${PN}-${SLOT}"
+OUTPUT_PATH="${PN}${APPENDIX}"
 ASSEMBLY_VERSION="3.5.1.26"
 
 src_prepare() {
-	sed "s#\$(AntlrBuildTaskPath)#/usr/$(get_libdir)/mono/${EBUILD_FRAMEWORK}/${PN}-${SLOT}#;s#\$(AntlrToolPath)#/usr/share/${PN}-${SLOT}/Antlr3.exe#" "${FILESDIR}/Antlr3.props" >"${S}/AntlrBuildTask/Antlr3.props" || die
+	sed "s#\$(AntlrBuildTaskPath)#/usr/$(get_libdir)/mono/${EBUILD_FRAMEWORK}/${PN}${APPENDIX}#;s#\$(AntlrToolPath)#/usr/share/${PN}${APPENDIX}/Antlr3.exe#" "${FILESDIR}/Antlr3.props" >"${S}/AntlrBuildTask/Antlr3.props" || die
 	local ATEXT="[assembly:System.Reflection.AssemblyVersion(\"${ASSEMBLY_VERSION}\")]"
 	echo "${ATEXT}" >"${S}/AntlrBuildTask/AV.cs" || die
 	echo "${ATEXT}" >"${S}/Runtime/Antlr3.Runtime/AV.cs" || die
@@ -60,23 +64,28 @@ src_compile() {
 	COMMON_KEYS="${COMMON_KEYS} /define:DEBUG /debug+ /debug:full /optimize-"
 	fi
 
+	local MONO=/usr/bin/mono
+
 	cd "${S}/AntlrBuildTask" || die
-	mono /usr/lib/mono/4.5/csc.exe /target:library "/out:${S}/${OUTPUT_PATH}/AntlrBuildTask.dll" /reference:${FW_PATH}/System.Core.dll /reference:${GAC_PATH}/Microsoft.Build.Framework/15.3.0.0__0738eb9f132ed756/Microsoft.Build.Framework.dll /reference:${GAC_PATH}/Microsoft.Build.Utilities.Core/15.3.0.0__0738eb9f132ed756/Microsoft.Build.Utilities.Core.dll ${COMMON_KEYS} || die
+	"${MONO}" /usr/lib/mono/4.5/csc.exe /target:library "/out:${S}/${OUTPUT_PATH}/AntlrBuildTask.dll" /reference:${FW_PATH}/System.Core.dll /reference:${GAC_PATH}/Microsoft.Build.Framework/15.3.0.0__0738eb9f132ed756/Microsoft.Build.Framework.dll /reference:${GAC_PATH}/Microsoft.Build.Utilities.Core/15.3.0.0__0738eb9f132ed756/Microsoft.Build.Utilities.Core.dll ${COMMON_KEYS} || die
 
 	cd "${S}/Runtime/Antlr3.Runtime" || die
-	mono /usr/lib/mono/4.5/csc.exe /target:library "/out:${S}/${OUTPUT_PATH}/Antlr.Runtime.dll" /reference:${FW_PATH}/System.Core.dll ${COMMON_KEYS} || die
+	"${MONO}" /usr/lib/mono/4.5/csc.exe /target:library "/out:${S}/${OUTPUT_PATH}/Antlr.Runtime.dll" /reference:${FW_PATH}/System.Core.dll ${COMMON_KEYS} || die
 
 	cd "${S}/Runtime/Antlr3.Runtime.Debug" || die
-	mono /usr/lib/mono/4.5/csc.exe /target:library "/out:${S}/${OUTPUT_PATH}/Antlr.Runtime.Debug.dll" "/reference:${FW_PATH}/System.Core.dll" "/reference:${S}/${OUTPUT_PATH}/Antlr.Runtime.dll" ${COMMON_KEYS} || die
+	"${MONO}" /usr/lib/mono/4.5/csc.exe /target:library "/out:${S}/${OUTPUT_PATH}/Antlr.Runtime.Debug.dll" "/reference:${FW_PATH}/System.Core.dll" "/reference:${S}/${OUTPUT_PATH}/Antlr.Runtime.dll" ${COMMON_KEYS} || die
 
 	cd "${S}/Antlr4.StringTemplate" || die
-	mono /usr/lib/mono/4.5/csc.exe /target:library "/out:${S}/${OUTPUT_PATH}/Antlr4.StringTemplate.dll" "/reference:${FW_PATH}/System.Core.dll" "/reference:${S}/${OUTPUT_PATH}/Antlr.Runtime.dll" ${COMMON_KEYS} || die
+	"${MONO}" /usr/lib/mono/4.5/csc.exe /target:library "/out:${S}/${OUTPUT_PATH}/Antlr4.StringTemplate.dll" "/reference:${FW_PATH}/System.Core.dll" "/reference:${S}/${OUTPUT_PATH}/Antlr.Runtime.dll" ${COMMON_KEYS} || die
 
 	cd "${S}/Antlr3" || die
-	mono /usr/lib/mono/4.5/csc.exe /target:exe "/out:${S}/${OUTPUT_PATH}/Antlr3.exe" /define:NETSTANDARD "/reference:${FW_PATH}/System.Core.dll" "/reference:${FW_PATH}/System.Xml.Linq.dll" "/reference:${S}/${OUTPUT_PATH}/Antlr.Runtime.dll" "/reference:${S}/${OUTPUT_PATH}/Antlr.Runtime.Debug.dll" "/reference:${S}/${OUTPUT_PATH}/Antlr4.StringTemplate.dll" ${COMMON_KEYS} || die
+	"${MONO}" /usr/lib/mono/4.5/csc.exe /target:exe "/out:${S}/${OUTPUT_PATH}/Antlr3.exe" /define:NETSTANDARD "/reference:${FW_PATH}/System.Core.dll" "/reference:${FW_PATH}/System.Xml.Linq.dll" "/reference:${S}/${OUTPUT_PATH}/Antlr.Runtime.dll" "/reference:${S}/${OUTPUT_PATH}/Antlr.Runtime.Debug.dll" "/reference:${S}/${OUTPUT_PATH}/Antlr4.StringTemplate.dll" ${COMMON_KEYS} || die
+
+	cd "${S}/Antlr3.Targets/Antlr3.Targets.CSharp2" || die
+	"${MONO}" /usr/lib/mono/4.5/csc.exe /target:library "/out:${S}/${OUTPUT_PATH}/Targets/Antlr3.Targets.CSharp2.dll" /define:NETSTANDARD "/reference:${FW_PATH}/System.Core.dll" "/reference:${S}/${OUTPUT_PATH}/Antlr3.exe" "/reference:${S}/${OUTPUT_PATH}/Antlr4.StringTemplate.dll" ${COMMON_KEYS} || die
 
 	cd "${S}/Antlr3.Targets/Antlr3.Targets.CSharp3" || die
-	mono /usr/lib/mono/4.5/csc.exe /target:library "/out:${S}/${OUTPUT_PATH}/Targets/Antlr3.Targets.CSharp3.dll" /define:NETSTANDARD "/reference:${FW_PATH}/System.Core.dll" "/reference:${S}/${OUTPUT_PATH}/Antlr3.exe" "/reference:${S}/${OUTPUT_PATH}/Antlr4.StringTemplate.dll" ${COMMON_KEYS} || die
+	"${MONO}" /usr/lib/mono/4.5/csc.exe /target:library "/out:${S}/${OUTPUT_PATH}/Targets/Antlr3.Targets.CSharp3.dll" /define:NETSTANDARD "/reference:${FW_PATH}/System.Core.dll" "/reference:${S}/${OUTPUT_PATH}/Antlr3.exe" "/reference:${S}/${OUTPUT_PATH}/Antlr4.StringTemplate.dll" ${COMMON_KEYS} || die
 
 	cd "${S}" || die
 }
@@ -94,8 +103,8 @@ src_install() {
 	einstask "${OUTPUT_PATH}/AntlrBuildTask.dll" "${TASKS_PROPS_FILE}" "${TASKS_TARGETS_FILE}"
 
 	if use debug; then
-		make_wrapper antlrcs "/usr/bin/mono --debug \${MONO_OPTIONS} /usr/share/${PN}-${SLOT}/Antlr3.exe"
+		make_wrapper antlrcs "/usr/bin/mono --debug \${MONO_OPTIONS} /usr/share/${PN}${APPENDIX}/Antlr3.exe"
 	else
-		make_wrapper antlrcs "/usr/bin/mono \${MONO_OPTIONS} /usr/share/${PN}-${SLOT}/Antlr3.exe"
+		make_wrapper antlrcs "/usr/bin/mono \${MONO_OPTIONS} /usr/share/${PN}${APPENDIX}/Antlr3.exe"
 	fi
 }

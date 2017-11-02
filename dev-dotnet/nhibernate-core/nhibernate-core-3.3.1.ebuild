@@ -6,7 +6,7 @@ EAPI=6
 KEYWORDS="~amd64 ~ppc ~x86"
 RESTRICT="mirror"
 
-SLOT="5"
+SLOT="3"
 
 USE_DOTNET="net45"
 inherit msbuild gac
@@ -15,7 +15,7 @@ IUSE="+${USE_DOTNET}"
 NAME="nhibernate-core"
 HOMEPAGE="http://nhibernate.info/"
 
-EGIT_COMMIT="c2c93d979611463b5a3fb12c4d27bb78d86de9d4"
+EGIT_COMMIT="7f3252bcb491b1725dffee5a2a6bee88a1e7b252"
 SRC_URI="https://github.com/nhibernate/${NAME}/archive/${EGIT_COMMIT}.tar.gz -> ${PF}.tar.gz
 	https://github.com/mono/mono/raw/master/mcs/class/mono.snk"
 S="${WORKDIR}/${NAME}-${EGIT_COMMIT}"
@@ -52,6 +52,7 @@ function output_filename ( ) {
 src_prepare() {
 	cp "${FILESDIR}/${METAFILE_TO_BUILD}-${PV}.csproj" "${S}/${PATH_TO_PROJ}/${METAFILE_TO_BUILD}.csproj" || die
 	cp "${FILESDIR}/SharedAssemblyInfo-${PV}.cs" "${S}/${PATH_TO_PROJ}/../SharedAssemblyInfo.cs" || die
+	#find "${S}" -iname "*.g" -exec sed -i "s/CSharp2/CSharp3/" {} \; || die
 	eapply_user
 }
 

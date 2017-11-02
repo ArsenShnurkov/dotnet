@@ -7,38 +7,36 @@ EAPI=6
 KEYWORDS="~amd64 ~ppc ~x86"
 RESTRICT="mirror"
 
-SLOT="0"
+SLOT="4"
 
 USE_DOTNET="net45"
 
-inherit dotnet msbuild gac
+inherit msbuild gac
 
 IUSE="+${USE_DOTNET} debug developer doc"
 
-NAME="antlrcs"
-HOMEPAGE="https://github.com/antlr/${NAME}"
-EGIT_COMMIT="ca331b7109e1faa5a6aa7336bb6281ce9363e62b"
-SRC_URI="https://github.com/ArsenShnurkov/shnurise-tarballs/raw/dev-utils/${PN}-${SLOT}/${PN}-${PV}.tar.gz -> ${NAME}-${PV}.tar.gz
+HOMEPAGE="https://github.com/autofac/Autofac"
+SRC_URI="https://github.com/autofac/Autofac/archive/v4.1.1.tar.gz -> ${PN}-${PV}.tar.gz
 	https://github.com/mono/mono/raw/master/mcs/class/mono.snk"
-S="${WORKDIR}"
 
-DESCRIPTION="The C# port of ANTLR 3 (Rubtime library)"
-LICENSE="BSD" # https://github.com/antlr/antlrcs/blob/master/LICENSE.txt
+S="${WORKDIR}/Autofac-${PV}"
+
+DESCRIPTION="An addictive .NET IoC container"
+LICENSE="MIT" # https://github.com/autofac/Autofac/blob/develop/LICENSE
 
 COMMON_DEPEND=">=dev-lang/mono-5.4.0.167 <dev-lang/mono-9999
 "
 RDEPEND="${COMMON_DEPEND}
 "
 DEPEND="${COMMON_DEPEND}
-	>=dev-dotnet/msbuildtasks-1.5.0.240
 "
 
-PATH_TO_PROJ="Runtime/Antlr3.Runtime"
-METAFILE_TO_BUILD="old-Antlr3.Runtime.csproj"
-ASSEMBLY_NAME="Antlr3.Runtime"
+PROJECT_DIR="src/Autofac"
+PROJECT_FILE=Autofac
+ASSEMBLY_NAME=Autofac
 
 KEY2="${DISTDIR}/mono.snk"
-ASSEMBLY_VERSION="3.5.1.26"
+ASSEMBLY_VERSION="${PV}"
 
 function output_filename ( ) {
 	local DIR=""
@@ -47,16 +45,20 @@ function output_filename ( ) {
 	else
 		DIR="Release"
 	fi
-	echo "${PATH_TO_PROJ}/bin/${DIR}/${ASSEMBLY_NAME}.dll"
+	echo "${S}/${PROJECT_DIR}/bin/${DIR}/${ASSEMBLY_NAME}.dll"
 }
 
 src_prepare() {
-	cp "${FILESDIR}/${METAFILE_TO_BUILD}" "${S}/${PATH_TO_PROJ}/" || die
+	cp "${FILESDIR}/${PROJECT_FILE}-${PV}.csproj" "${S}/${PROJECT_DIR}/${PROJECT_FILE}.csproj" || die
+	# create version info files
+	cat <<-METADATA >"${S}/${PROJECT_DIR}/Properties/AssemblyVersion.cs" || die
+		[assembly: System.Reflection.AssemblyVersion("4.1.1")]
+	METADATA
 	eapply_user
 }
 
 src_compile() {
-	emsbuild /p:TargetFrameworkVersion=v4.6 "/p:SignAssembly=true" "/p:PublicSign=true" "/p:AssemblyOriginatorKeyFile=${KEY2}" /p:VersionNumber="${ASSEMBLY_VERSION}" "${S}/${PATH_TO_PROJ}/${METAFILE_TO_BUILD}"
+	emsbuild "/p:SignAssembly=true" "/p:PublicSign=true" "/p:AssemblyOriginatorKeyFile=${KEY2}" "${PROJECT_DIR}/${PROJECT_FILE}.csproj"
 	sn -R "$(output_filename)" "${KEY2}" || die
 }
 
